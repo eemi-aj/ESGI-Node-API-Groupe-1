@@ -40,7 +40,7 @@ router.get('/', function(req, res, next) {
     });
 */
 
-/*   //DELETING ONE DOCUMENT
+/*  //DELETING ONE DOCUMENT
     console.log('Deleting One element');
     col.deleteMany({content: 'Content of the note'});
 */
