@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert');
+const md5 = require('md5');
 const url = 'mongodb://localhost:27017/api-bdd';
 const dbName = 'notes-api';
 
@@ -11,13 +12,14 @@ router.get('/', async function(req, res) {
     try {
         await client.connect();
         const db = client.db(dbName);
-        const col = db.collection('notes');
+        const col = db.collection('users');
         console.log('Connected\n');
 
         //Display all datas of the collection
-        console.log('Displaying datas\n');
+        console.log('Displaying users\n');
         let data = await col.find().toArray();
         res.send(data);
+
     } catch (err) {
         res.send(err);
     }
@@ -30,25 +32,21 @@ router.post('/', async function(req, res) {
     try {
         await client.connect();
         const db = client.db(dbName);
-        const col = db.collection('notes');
+        const col = db.collection('users');
         console.log('Connected\n');
 
         //INSERT ONE DOCUMENT
-        let userID = req.body.userID;
-        let content = req.body.content;
-        let createdAt = Date.now();
-        let lastUpdatedAt = null;
+        let username = req.body.username;
+        let password = md5(req.body.password);
         await col.insertOne({
-            userID: userID,
-            content: content,
-            createdAt: createdAt,
-            lastUpdatedAt: lastUpdatedAt
+            username: username,
+            password: password
         });
-        res.send('Note added');
+        res.send('token');
 /*
       //DELETING ONE DOCUMENT
         console.log('Deleting One element');
-        col.deleteMany({content: 'test'});
+        col.deleteMany({username: 'nassim2'});
 */
     } catch (err) {
         res.send(err);
