@@ -58,4 +58,28 @@ router.post('/', async function(req, res) {
     client.close();
 });
 
+/* DELETE a note */
+router.post('/id', async function(req, res) {
+    const client = new MongoClient(url, { useNewUrlParser: true });
+    try {
+        await client.connect();
+        const db = client.db(dbName);
+        const col = db.collection('notes');
+        console.log('Connected\n');
+
+        //DELETE ONE DOCUMENT
+        let id = req.body.id;
+        await col.deleteOne({
+            id: id,
+        });
+        res.send('Note deleted');
+
+    } catch (err) {
+        res.send(err);
+    }
+    client.close();
+});
+
+
+
 module.exports = router;
