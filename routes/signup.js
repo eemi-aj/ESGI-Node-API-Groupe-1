@@ -18,7 +18,7 @@ function isUsernameValid(str){
     return true;
 }
 
-/* GET notes JSON */
+/* GET ALL USERS */
 router.get('/', async function(req, res) {
     const client = new MongoClient(url, { useNewUrlParser: true });
     try {
@@ -37,7 +37,7 @@ router.get('/', async function(req, res) {
     client.close();
 });
 
-/* POST a note */
+/* SIGN UP A USER */
 router.post('/', async function(req, res) {
     const client = new MongoClient(url, { useNewUrlParser: true });
     try {
@@ -63,11 +63,11 @@ router.post('/', async function(req, res) {
             });
             res.send({token: 'token', error: null});
         }
-
+/*
       //DELETING ONE DOCUMENT
         console.log('Deleting One element');
         col.deleteMany({username: 'test'});
-
+*/
     } catch (err) {
         res.send(err);
     }

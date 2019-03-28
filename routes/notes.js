@@ -25,7 +25,7 @@ router.get('/', async function(req, res) {
 });
 
 /* POST a note */
-router.post('/', async function(req, res) {
+router.put('/', async function(req, res) {
     const client = new MongoClient(url, { useNewUrlParser: true });
     try {
         await client.connect();
