@@ -91,4 +91,34 @@ router.patch('/:id', async function(req, res) {
     client.close();
 });
 
+
+
+/* DELETE a note */
+router.delete('/:id', async function(req, res) {
+    const client = new MongoClient(url, { useNewUrlParser: true });
+    try {
+        await client.connect();
+        const db = client.db(dbName);
+        const col = db.collection('notes');
+        //DELETE ONE DOCUMENT
+        let id_note = req.params.id;
+        console.log(id_note);
+        let deleteResult = await col.deleteOne({ _id : ObjectId(id_note) });
+        
+        if(deleteResult.result.n != 0){
+            res.send('note deleted');
+        }
+        else {
+            res.status(404).send('id not found');
+        }
+
+       
+    } catch (err) {
+        res.send(err);
+    }
+    client.close();
+        
+        
+});
+
 module.exports = router;
