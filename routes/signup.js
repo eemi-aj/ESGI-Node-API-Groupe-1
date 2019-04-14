@@ -19,25 +19,6 @@ function isUsernameValid(str){
     return true;
 }
 
-/* GET ALL USERS */
-router.get('/', async function(req, res) {
-    const client = new MongoClient(url, { useNewUrlParser: true });
-    try {
-        await client.connect();
-        const db = client.db(dbName);
-        const col = db.collection('users');
-        console.log('Connected\n');
-
-        //Display all datas of the collection
-        console.log('Displaying users\n');
-        let data = await col.find({}).toArray();
-        res.send(data);
-    } catch (err) {
-        res.send(err);
-    }
-    client.close();
-});
-
 /* SIGN UP A USER */
 router.post('/', async function(req, res) {
     const client = new MongoClient(url, { useNewUrlParser: true });
@@ -62,7 +43,7 @@ router.post('/', async function(req, res) {
                 username: req.body.username,
                 password: md5(req.body.password)
             });
-            var result = await col.find({username: req.body.username, password: md5(req.body.password)}).toArray();
+            let result = await col.find({username: req.body.username, password: md5(req.body.password)}).toArray();
             jwt.sign({
                 _id: result[0]._id,
                 username: result[0].username,
@@ -76,11 +57,6 @@ router.post('/', async function(req, res) {
                 }
             });
         }
-/*
-      //DELETING ONE DOCUMENT
-        console.log('Deleting One element');
-        col.deleteMany({username: 'test'});
-*/
     } catch (err) {
         res.send(err);
     }
