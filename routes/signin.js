@@ -2,7 +2,6 @@ var express = require('express');
 var router = express.Router();
 const MongoClient = require('mongodb').MongoClient;
 const md5 = require('md5');
-const reversemd5 = require('reverse-md5');
 const url = 'mongodb://localhost:27017/api-bdd';
 const dbName = 'notes-api';
 const jwt = require('jsonwebtoken');
@@ -85,7 +84,7 @@ router.post('/', async function(req, res) {
                     }
                 });
             } else {
-                res.send({message: 'error'});
+                res.status(403).send({error: 'Cet identifiant est inconnu'});
             }
         }
     } catch (err) {
