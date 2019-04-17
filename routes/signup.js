@@ -1,16 +1,16 @@
 var express = require('express');
 var router = express.Router();
-const MongoClient = require('mongodb').MongoClient;
-const url = process.env.MONGODB_URI || 'mongodb://localhost:27017/api-bdd';
-const secret = process.env.JWT_KEY || 'secret';
-const dbName = 'notes-api';
-const jwt = require('jsonwebtoken');
-const md5 = require('md5');
-var {isUsernameValid} = require('./validStrings');
+const {MongoClient} = require('../config');
+const {MONGODB_URI} = require('../config');
+const {JWT_KEY} = require('../config');
+const {dbName} = require('../config');
+const {jwt} = require('../config');
+const {md5} = require('../config');
+const {isUsernameValid} = require('../config');
 
 /* SIGN UP A USER */
 router.post('/', async function(req, res) {
-    const client = new MongoClient(url, { useNewUrlParser: true });
+    const client = new MongoClient(MONGODB_URI, { useNewUrlParser: true });
     try {
         await client.connect();
         const db = client.db(dbName);
@@ -37,7 +37,7 @@ router.post('/', async function(req, res) {
                 _id: result[0]._id,
                 username: result[0].username,
                 password: req.body.password
-            }, secret, { expiresIn: '24h' },(err, token) => {
+            }, JWT_KEY, { expiresIn: '24h' },(err, token) => {
                 if(err) {
                     res.send({message: 'error'});
                 }

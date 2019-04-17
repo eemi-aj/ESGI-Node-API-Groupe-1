@@ -1,20 +1,20 @@
 var express = require('express');
 var router = express.Router();
-var ObjectId = require('mongodb').ObjectId;
-const MongoClient = require('mongodb').MongoClient;
-const url = process.env.MONGODB_URI || 'mongodb://localhost:27017/api-bdd';
-const secret = process.env.JWT_KEY || 'secret';
-const dbName = 'notes-api';
-const jwt = require('jsonwebtoken');
-var {middleToken} = require('./middleware');
+const {MongoClient} = require('../config');
+const {MONGODB_URI} = require('../config');
+const {JWT_KEY} = require('../config');
+const {dbName} = require('../config');
+const {jwt} = require('../config');
+const {middleToken} = require('./middleware');
+const {ObjectId} = require('../config');
 
 /* GET NOTES */
 router.get('/', middleToken, async function(req, res) {
-    jwt.verify(req.token, secret, async (err, data) => {
+    jwt.verify(req.token, JWT_KEY, async (err, data) => {
         if (err) {
             res.status(401).send('Utilisateur non connecté');
         } else {
-            const client = new MongoClient(url, {useNewUrlParser: true});
+            const client = new MongoClient(MONGODB_URI, {useNewUrlParser: true});
             try {
                 await client.connect();
                 const db = client.db(dbName);
@@ -34,11 +34,11 @@ router.get('/', middleToken, async function(req, res) {
 
 /* PUT A NOTE */
 router.put('/', middleToken, async function(req, res) {
-    jwt.verify(req.token, secret, async (err, data) => {
+    jwt.verify(req.token, JWT_KEY, async (err, data) => {
         if (err) {
             res.status(401).send('Utilisateur non connecté');
         } else {
-            const client = new MongoClient(url, {useNewUrlParser: true});
+            const client = new MongoClient(MONGODB_URI, {useNewUrlParser: true});
             try {
                 await client.connect();
                 const db = client.db(dbName);
@@ -75,11 +75,11 @@ router.put('/', middleToken, async function(req, res) {
 
 /* PATCH A NOTE */
 router.patch('/:id', middleToken, async function(req, res) {
-    jwt.verify(req.token, secret, async (err, data) => {
+    jwt.verify(req.token, JWT_KEY, async (err, data) => {
         if (err) {
             res.status(401).send('Utilisateur non connecté');
         } else {
-            const client = new MongoClient(url, {useNewUrlParser: true});
+            const client = new MongoClient(MONGODB_URI, {useNewUrlParser: true});
             try {
                 await client.connect();
                 const db = client.db(dbName);
@@ -130,11 +130,11 @@ router.patch('/:id', middleToken, async function(req, res) {
 
 /* DELETE a note */
 router.delete('/:id', middleToken, async function(req, res) {
-    jwt.verify(req.token, secret, async (err, data) => {
+    jwt.verify(req.token, JWT_KEY, async (err, data) => {
         if (err) {
             res.status(401).send('Utilisateur non connecté');
         } else {
-            const client = new MongoClient(url, {useNewUrlParser: true});
+            const client = new MongoClient(MONGODB_URI, {useNewUrlParser: true});
             try {
                 await client.connect();
                 const db = client.db(dbName);

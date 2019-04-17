@@ -5,7 +5,7 @@ function middleToken(req, res, next){
         req.token = xaccesstoken[1];
         next();
     } else {
-        res.sendStatus(403);
+        res.status(401).send('Utilisateur non connecté');
     }
 }
 module.exports = {middleToken};
