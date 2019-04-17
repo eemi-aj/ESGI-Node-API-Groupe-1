@@ -1,10 +1,10 @@
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/api-bdd';
 const JWT_KEY = process.env.JWT_KEY || 'notes-api';
 const PORT = process.env.PORT || 3000;
+const dbName = process.env.DBNAME ||'notes-api';
 
 const MongoClient = require('mongodb').MongoClient;
 const ObjectId = require('mongodb').ObjectId;
-const dbName = 'notes-api';
 
 const jwt = require('jsonwebtoken');
 const md5 = require('md5');
