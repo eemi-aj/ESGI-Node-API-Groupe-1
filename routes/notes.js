@@ -7,6 +7,7 @@ const {dbName} = require('../config');
 const {jwt} = require('../config');
 const {headerParser} = require('./middleware');
 const {ObjectId} = require('../config');
+const {dateNow} = require('../config');
 
 /* GET NOTES */
 router.get('/', headerParser, async function(req, res) {
@@ -48,7 +49,7 @@ router.put('/', headerParser, async function(req, res) {
                 //INSERT ONE DOCUMENT
                 let userID = data._id;
                 let content = req.body.content;
-                let createdAt = Date.now();
+                let createdAt = dateNow();
                 let lastUpdatedAt = null;
                 if(content.length === 0){
                     res.status(400).send({error: 'Aucun contenu n\'a été saisi'});
@@ -88,7 +89,7 @@ router.patch('/:id', headerParser, async function(req, res) {
                 //INSERT ONE DOCUMENT
                 const id_note = req.params.id;
                 const content = req.body.content;
-                const lastUpdatedAt = Date.now();
+                const lastUpdatedAt = dateNow();
                 //NoteResults dont exist if i find with _id
                 let noteResults = await col.find().toArray();
                 let resultForEach = 0;

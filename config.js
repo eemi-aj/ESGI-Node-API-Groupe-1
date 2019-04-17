@@ -1,4 +1,4 @@
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://root1:root1@nodejs-1vdni.mongodb.net/test?retryWrites=true';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/api-bdd';
 const JWT_KEY = process.env.JWT_KEY || 'notes-api';
 const PORT = process.env.PORT || 3000;
 const dbName = process.env.DBNAME ||'notes-api';
@@ -8,6 +8,26 @@ const ObjectId = require('mongodb').ObjectId;
 
 const jwt = require('jsonwebtoken');
 const md5 = require('md5');
+
+function dateNow(){
+    var dateNow = new Date();
+    var day = dateNow.getDate();
+    var month = dateNow.getMonth();
+    var year = dateNow.getFullYear();
+    var hour = dateNow.getHours();
+    var minutes = dateNow.getMinutes();
+    var seconds = dateNow.getSeconds();
+    month += 1;
+    const dateFormatted = formatDigits(day) + '/' + formatDigits(month) + '/' + year + ' ' + formatDigits(hour) + ':' + formatDigits(minutes) + ':' + formatDigits(seconds);
+    return dateFormatted;
+}
+
+function formatDigits(number){
+    if(number < 10) {
+        number = ('0' + number);
+    }
+    return number;
+}
 
 function isUsernameValid(str){
     if(typeof(str)!== 'string'){
@@ -22,13 +42,14 @@ function isUsernameValid(str){
 }
 
 module.exports = {
-    md5,
-    jwt,
-    dbName,
     ObjectId,
     MongoClient,
     MONGODB_URI,
+    dbName,
     JWT_KEY,
     PORT,
-    isUsernameValid
+    jwt,
+    md5,
+    isUsernameValid,
+    dateNow
 };
