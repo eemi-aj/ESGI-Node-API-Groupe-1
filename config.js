@@ -1,4 +1,4 @@
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/api-bdd';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://root1:root1@nodejs-1vdni.mongodb.net/test?retryWrites=true';
 const JWT_KEY = process.env.JWT_KEY || 'notes-api';
 const PORT = process.env.PORT || 3000;
 const dbName = process.env.DBNAME ||'notes-api';
