@@ -9,7 +9,6 @@ const ObjectId = require('mongodb').ObjectId;
 const jwt = require('jsonwebtoken');
 const md5 = require('md5');
 
-
 function isUsernameValid(str){
     if(typeof(str)!== 'string'){
         return false;
