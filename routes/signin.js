@@ -5,12 +5,11 @@ const {MONGODB_URI} = require('../config');
 const {JWT_KEY} = require('../config');
 const {dbName} = require('../config');
 const {jwt} = require('../config');
-const {middleToken} = require('./middleware');
 const {isUsernameValid} = require('../config');
 const {md5} = require('../config');
 
-/* GET ALL USERS FOR TESTS */
-router.get('/', middleToken, async function(req, res) {
+/* GET ALL USERS FOR TESTS
+router.get('/', headerParser, async function(req, res) {
     jwt.verify(req.token, JWT_KEY, async (err, data) => {
         if(err){
             res.status(401).send('Utilisateur non connecté');
@@ -32,8 +31,9 @@ router.get('/', middleToken, async function(req, res) {
         }
     });
 });
+*/
 
-/* DELETE FOR TESTS */
+/* DELETE FOR TESTS
 router.delete('/', async function(req, res) {
     const client = new MongoClient(MONGODB_URI, { useNewUrlParser: true });
     try {
@@ -48,6 +48,7 @@ router.delete('/', async function(req, res) {
     }
     client.close();
 });
+*/
 
 /* SIGN IN */
 router.post('/', async function(req, res) {

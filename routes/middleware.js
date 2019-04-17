@@ -1,4 +1,4 @@
-function middleToken(req, res, next){
+function headerParser(req, res, next){
     const xaccesstokenHeader = req.headers['authorization'];
     if(typeof xaccesstokenHeader !== 'undefined'){
         const xaccesstoken = xaccesstokenHeader.split(' ');
@@ -8,4 +8,4 @@ function middleToken(req, res, next){
         res.status(401).send('Utilisateur non connecté');
     }
 }
-module.exports = {middleToken};
+module.exports = {headerParser};

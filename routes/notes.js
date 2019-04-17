@@ -5,11 +5,11 @@ const {MONGODB_URI} = require('../config');
 const {JWT_KEY} = require('../config');
 const {dbName} = require('../config');
 const {jwt} = require('../config');
-const {middleToken} = require('./middleware');
+const {headerParser} = require('./middleware');
 const {ObjectId} = require('../config');
 
 /* GET NOTES */
-router.get('/', middleToken, async function(req, res) {
+router.get('/', headerParser, async function(req, res) {
     jwt.verify(req.token, JWT_KEY, async (err, data) => {
         if (err) {
             res.status(401).send('Utilisateur non connecté');
@@ -33,7 +33,7 @@ router.get('/', middleToken, async function(req, res) {
 });
 
 /* PUT A NOTE */
-router.put('/', middleToken, async function(req, res) {
+router.put('/', headerParser, async function(req, res) {
     jwt.verify(req.token, JWT_KEY, async (err, data) => {
         if (err) {
             res.status(401).send('Utilisateur non connecté');
@@ -74,7 +74,7 @@ router.put('/', middleToken, async function(req, res) {
 });
 
 /* PATCH A NOTE */
-router.patch('/:id', middleToken, async function(req, res) {
+router.patch('/:id', headerParser, async function(req, res) {
     jwt.verify(req.token, JWT_KEY, async (err, data) => {
         if (err) {
             res.status(401).send('Utilisateur non connecté');
@@ -129,7 +129,7 @@ router.patch('/:id', middleToken, async function(req, res) {
 });
 
 /* DELETE a note */
-router.delete('/:id', middleToken, async function(req, res) {
+router.delete('/:id', headerParser, async function(req, res) {
     jwt.verify(req.token, JWT_KEY, async (err, data) => {
         if (err) {
             res.status(401).send('Utilisateur non connecté');
