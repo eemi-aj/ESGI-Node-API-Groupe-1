@@ -2,21 +2,11 @@ var express = require('express');
 var router = express.Router();
 var ObjectId = require('mongodb').ObjectId;
 const MongoClient = require('mongodb').MongoClient;
-const url = 'mongodb://localhost:27017/api-bdd';
+const url = process.env.MONGODB_URI || 'mongodb://localhost:27017/api-bdd';
+const secret = process.env.JWT_KEY || 'secret';
 const dbName = 'notes-api';
 const jwt = require('jsonwebtoken');
-const secret = process.env.JWT_KEY || 'secret';
-
-function middleToken(req, res, next){
-    const xaccesstokenHeader = req.headers['authorization'];
-    if(typeof xaccesstokenHeader !== 'undefined'){
-        const xaccesstoken = xaccesstokenHeader.split(' ');
-        req.token = xaccesstoken[1];
-        next();
-    } else {
-        res.sendStatus(403);
-    }
-}
+var {middleToken} = require('./middleware');
 
 /* GET NOTES */
 router.get('/', middleToken, async function(req, res) {
@@ -39,7 +29,7 @@ router.get('/', middleToken, async function(req, res) {
             }
             client.close();
         }
-    })
+    });
 });
 
 /* PUT A NOTE */
@@ -60,30 +50,34 @@ router.put('/', middleToken, async function(req, res) {
                 let content = req.body.content;
                 let createdAt = Date.now();
                 let lastUpdatedAt = null;
-                let resInsert = await col.insertOne({
-                    userID,
-                    content,
-                    createdAt,
-                    lastUpdatedAt
-                });
-                let note = resInsert.ops[0];
-                res.send({
-                    error: null,
-                    note
-                });
+                if(content.length === 0){
+                    res.status(400).send({error: 'Aucun contenu n\'a été saisi'});
+                } else {
+                    let resInsert = await col.insertOne({
+                        userID,
+                        content,
+                        createdAt,
+                        lastUpdatedAt
+                    });
+                    let note = resInsert.ops[0];
+                    res.send({
+                        error: null,
+                        note
+                    });
+                }
             } catch (err) {
                 res.send(err);
             }
             client.close();
         }
-    })
+    });
 });
 
 /* PATCH A NOTE */
 router.patch('/:id', middleToken, async function(req, res) {
     jwt.verify(req.token, secret, async (err, data) => {
         if (err) {
-            res.send('ERROR AUTHENTIFICATION');
+            res.status(401).send('Utilisateur non connecté');
         } else {
             const client = new MongoClient(url, {useNewUrlParser: true});
             try {
@@ -105,7 +99,9 @@ router.patch('/:id', middleToken, async function(req, res) {
                         noteToBeModified = resForEach;
                     }
                 });
-                if(resultForEach === 0) {
+                if(content.length === 0){
+                    res.status(400).send({error: 'Aucun contenu n\'a été saisi'});
+                } else if(resultForEach === 0) {
                     res.status(404).send({error: 'Cet identifiant est inconnu'});
                 } else if(noteToBeModified.userID !== data._id){
                     res.status(403).send({error: 'Accès non autorisé à cette note'})
@@ -136,7 +132,7 @@ router.patch('/:id', middleToken, async function(req, res) {
 router.delete('/:id', middleToken, async function(req, res) {
     jwt.verify(req.token, secret, async (err, data) => {
         if (err) {
-            res.send('ERROR AUTHENTIFICATION');
+            res.status(401).send('Utilisateur non connecté');
         } else {
             const client = new MongoClient(url, {useNewUrlParser: true});
             try {
@@ -170,4 +166,4 @@ router.delete('/:id', middleToken, async function(req, res) {
     });
 });
 
-module.exports = router;
+module.exports = {router};

@@ -1,23 +1,12 @@
 var express = require('express');
 var router = express.Router();
 const MongoClient = require('mongodb').MongoClient;
-const md5 = require('md5');
-const url = 'mongodb://localhost:27017/api-bdd';
+const url = process.env.MONGODB_URI || 'mongodb://localhost:27017/api-bdd';
+const secret = process.env.JWT_KEY || 'secret';
 const dbName = 'notes-api';
 const jwt = require('jsonwebtoken');
-const secret = process.env.JWT_KEY || 'secret';
-
-function isUsernameValid(str){
-    if(typeof(str)!== 'string'){
-        return false;
-    }
-    for(var i=0;i<str.length;i++){
-        if(str.charCodeAt(i)>122 || str.charCodeAt(i)<97){
-            return false;
-        }
-    }
-    return true;
-}
+const md5 = require('md5');
+var {isUsernameValid} = require('./validStrings');
 
 /* SIGN UP A USER */
 router.post('/', async function(req, res) {
@@ -63,4 +52,4 @@ router.post('/', async function(req, res) {
     client.close();
 });
 
-module.exports = router;
+module.exports = {router};

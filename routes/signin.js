@@ -1,40 +1,19 @@
 var express = require('express');
 var router = express.Router();
 const MongoClient = require('mongodb').MongoClient;
-const md5 = require('md5');
-const url = 'mongodb://localhost:27017/api-bdd';
+const url = process.env.MONGODB_URI || 'mongodb://localhost:27017/api-bdd';
+const secret = process.env.JWT_KEY || 'secret';
 const dbName = 'notes-api';
 const jwt = require('jsonwebtoken');
-const secret = process.env.JWT_KEY || 'secret';
+const md5 = require('md5');
+var {isUsernameValid} = require('./validStrings');
+var {middleToken} = require('./middleware');
 
-function isUsernameValid(str){
-    if(typeof(str)!== 'string'){
-        return false;
-    }
-    for(var i=0;i<str.length;i++){
-        if(str.charCodeAt(i)>122 || str.charCodeAt(i)<97){
-            return false;
-        }
-    }
-    return true;
-}
-
-function middleToken(req, res, next){
-    const xaccesstokenHeader = req.headers['authorization'];
-    if(typeof xaccesstokenHeader !== 'undefined'){
-        const xaccesstoken = xaccesstokenHeader.split(' ');
-        req.token = xaccesstoken[1];
-        next();
-    } else {
-        res.sendStatus(403);
-    }
-}
-
-/* GET ALL USERS */
+/* GET ALL USERS FOR TESTS */
 router.get('/', middleToken, async function(req, res) {
     jwt.verify(req.token, secret, async (err, data) => {
         if(err){
-            res.send('slt');
+            res.status(401).send('Utilisateur non connecté');
         }
         else {
             const client = new MongoClient(url, { useNewUrlParser: true });
@@ -52,6 +31,22 @@ router.get('/', middleToken, async function(req, res) {
             client.close();
         }
     });
+});
+
+/* DELETE FOR TESTS */
+router.delete('/', async function(req, res) {
+    const client = new MongoClient(url, { useNewUrlParser: true });
+    try {
+        await client.connect();
+        const db = client.db(dbName);
+        const col = db.collection('users');
+        //Display all datas of the collection
+        let data = await col.deleteMany({});
+        res.send(data);
+    } catch (err) {
+        res.send(err);
+    }
+    client.close();
 });
 
 /* SIGN IN */
@@ -93,4 +88,4 @@ router.post('/', async function(req, res) {
     client.close();
 });
 
-module.exports = router;
+module.exports = {router};
