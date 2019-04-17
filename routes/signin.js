@@ -1,22 +1,22 @@
 var express = require('express');
 var router = express.Router();
-const MongoClient = require('mongodb').MongoClient;
-const url = process.env.MONGODB_URI || 'mongodb://localhost:27017/api-bdd';
-const secret = process.env.JWT_KEY || 'secret';
-const dbName = 'notes-api';
-const jwt = require('jsonwebtoken');
-const md5 = require('md5');
-var {isUsernameValid} = require('./validStrings');
-var {middleToken} = require('./middleware');
+const {MongoClient} = require('../config');
+const {MONGODB_URI} = require('../config');
+const {JWT_KEY} = require('../config');
+const {dbName} = require('../config');
+const {jwt} = require('../config');
+const {middleToken} = require('./middleware');
+const {isUsernameValid} = require('../config');
+const {md5} = require('../config');
 
 /* GET ALL USERS FOR TESTS */
 router.get('/', middleToken, async function(req, res) {
-    jwt.verify(req.token, secret, async (err, data) => {
+    jwt.verify(req.token, JWT_KEY, async (err, data) => {
         if(err){
             res.status(401).send('Utilisateur non connecté');
         }
         else {
-            const client = new MongoClient(url, { useNewUrlParser: true });
+            const client = new MongoClient(MONGODB_URI, { useNewUrlParser: true });
             try {
                 await client.connect();
                 const db = client.db(dbName);
@@ -35,7 +35,7 @@ router.get('/', middleToken, async function(req, res) {
 
 /* DELETE FOR TESTS */
 router.delete('/', async function(req, res) {
-    const client = new MongoClient(url, { useNewUrlParser: true });
+    const client = new MongoClient(MONGODB_URI, { useNewUrlParser: true });
     try {
         await client.connect();
         const db = client.db(dbName);
@@ -51,7 +51,7 @@ router.delete('/', async function(req, res) {
 
 /* SIGN IN */
 router.post('/', async function(req, res) {
-    const client = new MongoClient(url, { useNewUrlParser: true });
+    const client = new MongoClient(MONGODB_URI, { useNewUrlParser: true });
     try {
         await client.connect();
         const db = client.db(dbName);
@@ -70,7 +70,7 @@ router.post('/', async function(req, res) {
                     _id: result[0]._id,
                     username: result[0].username,
                     password: req.body.password
-                }, secret, { expiresIn: '24h' },(err, token) => {
+                }, JWT_KEY, { expiresIn: '24h' },(err, token) => {
                     if(err) {
                         res.send({message: 'error'});
                     }
