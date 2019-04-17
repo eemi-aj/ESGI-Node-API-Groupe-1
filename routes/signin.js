@@ -9,8 +9,9 @@ const {isUsernameValid} = require('../config');
 const {md5} = require('../config');
 
 /* GET ALL USERS FOR TESTS
-router.get('/', headerParser, async function(req, res) {
-    jwt.verify(req.token, JWT_KEY, async (err, data) => {
+router.get('/', async function(req, res) {
+    var token = req.get('x-access-token');
+    jwt.verify(token, JWT_KEY, async (err, data) => {
         if(err){
             res.status(401).send('Utilisateur non connecté');
         }

@@ -5,13 +5,13 @@ const {MONGODB_URI} = require('../config');
 const {JWT_KEY} = require('../config');
 const {dbName} = require('../config');
 const {jwt} = require('../config');
-const {headerParser} = require('./middleware');
 const {ObjectId} = require('../config');
 const {dateNow} = require('../config');
 
 /* GET NOTES */
-router.get('/', headerParser, async function(req, res) {
-    jwt.verify(req.token, JWT_KEY, async (err, data) => {
+router.get('/', async function(req, res) {
+    var token = req.get('x-access-token');
+    jwt.verify(token, JWT_KEY, async (err, data) => {
         if (err) {
             res.status(401).send('Utilisateur non connecté');
         } else {
@@ -34,8 +34,9 @@ router.get('/', headerParser, async function(req, res) {
 });
 
 /* PUT A NOTE */
-router.put('/', headerParser, async function(req, res) {
-    jwt.verify(req.token, JWT_KEY, async (err, data) => {
+router.put('/', async function(req, res) {
+    var token = req.get('x-access-token');
+    jwt.verify(token, JWT_KEY, async (err, data) => {
         if (err) {
             res.status(401).send('Utilisateur non connecté');
         } else {
@@ -75,8 +76,9 @@ router.put('/', headerParser, async function(req, res) {
 });
 
 /* PATCH A NOTE */
-router.patch('/:id', headerParser, async function(req, res) {
-    jwt.verify(req.token, JWT_KEY, async (err, data) => {
+router.patch('/:id', async function(req, res) {
+    var token = req.get('x-access-token');
+    jwt.verify(token, JWT_KEY, async (err, data) => {
         if (err) {
             res.status(401).send('Utilisateur non connecté');
         } else {
@@ -130,8 +132,9 @@ router.patch('/:id', headerParser, async function(req, res) {
 });
 
 /* DELETE a note */
-router.delete('/:id', headerParser, async function(req, res) {
-    jwt.verify(req.token, JWT_KEY, async (err, data) => {
+router.delete('/:id', async function(req, res) {
+    var token = req.get('x-access-token');
+    jwt.verify(token, JWT_KEY, async (err, data) => {
         if (err) {
             res.status(401).send('Utilisateur non connecté');
         } else {
