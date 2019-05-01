@@ -1,0 +1,3 @@
+- plus de 90% du code a été produit par Nassim => contributions de l'équipe à vérifier
+- il manque un README pour expliquer comment exécuter le serveur API et le connecter à MongoDB
+- /!\ impossible d'exécuter ma suite de tests automatisés (https://github.com/adrienjoly/ava-tests-for-note-keeper) car la réponse de "POST /signup" n'est pas au format JSON => relire http://adrienjoly.com/cours-nodejs/05-proj/#interfaces et modifier les endpoints pour qu'ils correspondent au cahier des charges
